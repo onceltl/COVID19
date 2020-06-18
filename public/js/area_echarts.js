@@ -15,7 +15,7 @@ var citymap =
         loadallWorld(globalWordData);
 		reloadWorldEchart(globalWordData.globalDailyHistory);
 		
-    });
+    });			
 	map();
 	
 	
@@ -86,6 +86,7 @@ var citymap =
 					console.log(jsData);
 					setcitymap(jsData);
 					loadall(jsData);
+					
 				} else {
 					alert('error');
 				}

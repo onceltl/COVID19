@@ -1674,7 +1674,7 @@ function getProvince(mapName)
             {
                 //var jsondata = JSON.parse(data);
                 var jsData = data;
-                //console.log(jsData);
+                console.log(jsData);
                 //总计
                 loadStackLineEchartsProvince(getProvinceDayList(jsData), getProvinceDetailsDatalList(jsData));
 
