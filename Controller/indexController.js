@@ -119,6 +119,9 @@ function indexController(app) {
 					console.log("update data");
 				})
 			}
+			
+			
+
 			var getData;
 			User.findOne({name:'china'}, function(err, doc) {
 				if(err) throw err;
@@ -129,7 +132,8 @@ function indexController(app) {
 			
 		});		
     });
-
+	
+	
     app.post('/getJsonforeign', function (req, res, next) {
         //
         //
@@ -142,6 +146,29 @@ function indexController(app) {
                 var worlddata = new Object()
                 worlddata.foreign = jsData
                 res.send(worlddata);
+				
+				/*不能拟合
+				var worldDayList = jsData.globalDailyHistory;
+				var exec = require('child_process').exec;
+				var arg = [];
+				for (i = 0; i < worldDayList.length; i++){
+					arg.push(worldDayList[i].all.confirm);
+				}
+				exec('python Logistic.py '+ JSON.stringify(arg)+' ',function(error,stdout,stderr){
+					if(stdout.length >1){
+						var data = JSON.parse(stdout)
+						//console.log(data)
+						jsData.pre = data;
+						worlddata.foreign = jsData
+						res.send(worlddata);
+					} else {
+						console.log('you don\'t offer args');
+					}
+					if(error) {
+						console.info('stderr : '+stderr);
+					}
+				});
+				*/
 		})
 		
     });
@@ -156,7 +183,26 @@ function indexController(app) {
 				if(err) throw err;
 				getData = doc.jsondata;
 				var jsData = JSON.parse(JSON.parse(getData).data);
-				res.send(jsData);
+				//res.send(jsData);
+				var chinaDayList = jsData.chinaDayList;
+				var exec = require('child_process').exec;
+				var arg = [];
+				for (i = 0; i < chinaDayList.length; i++){
+					arg.push(chinaDayList[i].confirm);
+				}
+				exec('python Logistic.py '+ JSON.stringify(arg)+' ',function(error,stdout,stderr){
+					if(stdout.length >1){
+						var data = JSON.parse(stdout)
+						//console.log(data)
+						jsData.pre = data;
+						res.send(jsData);
+					} else {
+						console.log('you don\'t offer args');
+					}
+					if(error) {
+						console.info('stderr : '+stderr);
+					}
+				});
 		})
 		
 		
@@ -171,10 +217,32 @@ function indexController(app) {
 				getData = doc.jsondata;
 				//console.log(getData);
 				var jsData = JSON.parse(JSON.parse(getData)).data;
-				res.send(jsData);
+				//res.send(jsData);
+				var ProvinceDayList = jsData;
+				var exec = require('child_process').exec;
+				var arg = [];
+				for (i = 0; i < ProvinceDayList.length; i++){
+					arg.push(ProvinceDayList[i].confirm);
+				}
+				exec('python Logistic.py '+ JSON.stringify(arg)+' ',function(error,stdout,stderr){
+					if(stdout.length >1){
+						var data = JSON.parse(stdout)
+						//console.log(data)
+						var provincedata = {};
+						provincedata.daylist = jsData;
+						provincedata.pre = data;
+						res.send(provincedata);
+					} else {
+						console.log('you don\'t offer args');
+					}
+					if(error) {
+						console.info('stderr : '+stderr);
+					}
+				});
 		})
 		
     });
+
 }
 
 

@@ -78,6 +78,9 @@ User.findOne({ name: 'chinadaily' }, function (err, doc) {
 });
 
 mongoose.Promise = global.Promise;
+
+
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.engine('html',ejs.__express);  //增加

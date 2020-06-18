@@ -29,7 +29,7 @@ $(function ()
                     loadPercentageEcharts(getPercentageDate(jsData), getPercentageData(jsData));
 
                     // 预测
-                    loadPredictionEcharts(getchinaDayList(jsData), getchinaDetailsDatalList(jsData));
+                    loadPredictionEcharts(getPreChinaDayList(jsData), getchinaPreList(jsData));
                 }
                 else
                 {
@@ -139,6 +139,53 @@ function getchinaDetailsDatalList(data)
     detailsdatas.push(details3);
     detailsdatas.push(details4);
 
+    return detailsdatas;
+}
+function getchinaPreList(data)
+{
+    var getdata = data.chinaDayList;
+
+    var detailsdatas = [];
+
+    var details1 = new Object();
+    details1.value = [];
+    var details2 = new Object();
+    details2.value = [];
+    for (i = 0; i < getdata.length; i++)
+    {
+        details1.value.push(getdata[i].confirm);
+    }
+	getdata = data.pre;
+	for (i = 0; i < getdata.length; i++)
+    {
+        details2.value.push(parseInt(getdata[i]));
+    }
+    detailsdatas.push(details1);
+    detailsdatas.push(details2);
+
+    return detailsdatas;
+}
+function getProvincePreList(data)
+{
+    var getdata = data.daylist;
+
+    var detailsdatas = [];
+
+    var details1 = new Object();
+    details1.value = [];
+    var details2 = new Object();
+    details2.value = [];
+    for (i = 0; i < getdata.length; i++)
+    {
+        details1.value.push(getdata[i].confirm);
+    }
+	getdata = data.pre;
+	for (i = 0; i < getdata.length; i++)
+    {
+        details2.value.push(parseInt(getdata[i]));
+    }
+    detailsdatas.push(details1);
+    detailsdatas.push(details2);
     return detailsdatas;
 }
 function getProvinceDetailsDatalList(data)
@@ -1251,6 +1298,7 @@ function loadStackLineEchartsProvince(daydata, daydetailsdata)
 }
 function loadPredictionEcharts(daydata, daydetailsdata)
 {
+
     // 基于准备好的dom，初始化echarts实例
     var myChart = echarts.init(document.getElementById('echart1'));
 
@@ -1270,7 +1318,7 @@ function loadPredictionEcharts(daydata, daydetailsdata)
         legend :
         {
             top : '0%',
-            data : ['确诊总数'],
+            data : ['确诊总数','预测总数'],
             textStyle :
             {
                 color : 'rgba(255,255,255,.5)',
@@ -1357,8 +1405,24 @@ function loadPredictionEcharts(daydata, daydetailsdata)
             }
         ],
         series : [
-            {
-                name : '确诊总数',
+		        {
+
+                    type : 'bar',
+                    data : daydetailsdata[0].value,
+                    barWidth : '35%', //柱子宽度
+                    // barGap: 1, //柱子之间间距
+                    itemStyle :
+                    {
+                        normal :
+                        {
+                            color : '#27d08a',
+                            opacity : 1,
+                            barBorderRadius : 5,
+                        }
+                    }
+                },
+			{
+                name : '预测总数',
                 type : 'line',
                 smooth : true,
                 symbol : 'circle',
@@ -1399,10 +1463,9 @@ function loadPredictionEcharts(daydata, daydetailsdata)
                         borderWidth : 12
                     }
                 },
-                data : daydetailsdata[0].value
+                data : daydetailsdata[1].value
 
             },
-
         ]
 
     };
@@ -1627,9 +1690,9 @@ function loadAddsStackLineEcharts(addsdaydata, data)
     }
     );
 }
-
 function getchinaDayList(data)
 {
+
     var getdata = data.chinaDayList;
 
     var daydata = [];
@@ -1638,6 +1701,57 @@ function getchinaDayList(data)
         daydata.push(getdata[i].date);
     }
     return daydata;
+}
+function getPreChinaDayList(data)
+{
+
+    var getdata = data.chinaDayList;
+
+    var daydata = [];
+    for (i = 0; i < getdata.length; i++)
+    {
+        daydata.push(getdata[i].date);
+    }
+	
+	var time =getdata[getdata.length-1].date; 
+	time = time.split('.');
+	var date = new Date();
+	var myTime = new Date(date.getFullYear(),time[0],time[1]);
+	
+    for (i = 0; i<11 ;i++)
+	{
+		myTime.setDate(myTime.getDate()+1);
+		var aa=myTime.getMonth()+"." +myTime.getDate();
+		if (myTime.getMonth()<10) 
+			aa= '0'+aa;
+		daydata.push(aa);
+	}
+	return daydata;
+}
+function getPreProvinceDayList(data)
+{
+    var getdata = data.daylist;
+
+    var daydata = [];
+    for (i = 0; i < getdata.length; i++)
+    {
+        daydata.push(getdata[i].date);
+    }
+	
+	var time =getdata[getdata.length-1].date; 
+	time = time.split('.');
+	var date = new Date();
+	var myTime = new Date(date.getFullYear(),time[0],time[1]);
+	
+    for (i = 0; i<11 ;i++)
+	{
+		myTime.setDate(myTime.getDate()+1);
+		var aa=myTime.getMonth()+"." +myTime.getDate();
+		if (myTime.getMonth()<10) 
+			aa= '0'+aa;
+		daydata.push(aa);
+	}
+	return daydata;
 }
 function getProvinceDayList(data)
 {
@@ -1673,8 +1787,7 @@ function getProvince(mapName)
             if (status == "success")
             {
                 //var jsondata = JSON.parse(data);
-                var jsData = data;
-                console.log(jsData);
+                var jsData = data.daylist;
                 //总计
                 loadStackLineEchartsProvince(getProvinceDayList(jsData), getProvinceDetailsDatalList(jsData));
 
@@ -1685,7 +1798,7 @@ function getProvince(mapName)
                 loadPercentageEchartsProvince(getProvinceDayList(jsData), getProvincePercentageData(jsData));
 
                 // 预测
-                //loadPredictionEcharts(getchinaDayList(jsData), getchinaDetailsDatalList(jsData));
+                loadPredictionEcharts(getPreProvinceDayList(data), getProvincePreList(data));
             }
             else
             {
@@ -1713,11 +1826,10 @@ function reloadChinaEchart()
                     loadPercentageEcharts(getPercentageDate(jsData), getPercentageData(jsData));
 
                     // 预测
-                    loadPredictionEcharts(getchinaDayList(jsData), getchinaDetailsDatalList(jsData));
+                    loadPredictionEcharts(getPreChinaDayList(jsData), getchinaPreList(jsData));
 }
 function reloadWorldEchart(jsData)
 {
-                //console.log(jsData);
                 //总计
                 loadStackLineEchartsProvince(getWordDayList(jsData), getWordDetailsDatalList(jsData));
 
