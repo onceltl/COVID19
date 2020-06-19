@@ -19,7 +19,7 @@ confirm = json.loads(sys.argv[1])
 
 x = np.arange(len(confirm))
 
-popt, pcov = curve_fit(logistic_function, x, confirm,maxfev = 800000)
+popt, pcov = curve_fit(logistic_function, x, confirm)
 
  
     #近期情况预测

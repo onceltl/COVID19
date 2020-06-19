@@ -5,7 +5,7 @@ var User = require('../database/dbHandel');
 
 function updateAllData()
 {
-	//https://view.inews.qq.com/g2/getOnsInfo?name=disease_other
+	//https://view.inews.qq.com/g2/getOnsInfo?name=disease_h5
     //https://view.inews.qq.com/g2/getOnsInfo?name=disease_foreign
 	//https://api.inews.qq.com/newsqa/v1/query/pubished/daily/list?province=%E5%9B%9B%E5%B7%9D&
 	//https://api.inews.qq.com/newsqa/v1/automation/foreign/daily/list?country=%E9%98%BF%E6%A0%B9%E5%BB%B7&
@@ -183,11 +183,13 @@ function indexController(app) {
 				if(err) throw err;
 				getData = doc.jsondata;
 				var jsData = JSON.parse(JSON.parse(getData).data);
+				jsData.pre=[];
 				//res.send(jsData);
+				
 				var chinaDayList = jsData.chinaDayList;
 				var exec = require('child_process').exec;
 				var arg = [];
-				for (i = 0; i < chinaDayList.length; i++){
+				for (i = 0; i < chinaDayList.length-1; i++){
 					arg.push(chinaDayList[i].confirm);
 				}
 				exec('python Logistic.py '+ JSON.stringify(arg)+' ',function(error,stdout,stderr){

@@ -1037,7 +1037,7 @@ var citymap =
 				trigger: 'item',
 				formatter: function(params) {
 					var toolTiphtml = ''
-					if (params.componentSubType== "scatter")
+					if (params.componentSubType== "effectScatter")
 					{
 						for(var i = 0; i < toolTipData.length; i++) 
 						{
